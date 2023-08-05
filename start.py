@@ -267,10 +267,10 @@ class ZCListener:
         self.names = names
 
     def removeService(self, server, type, name):
-        self.names.remove(name.replace('.' + type, ''))
+        self.names.remove(name.replace(f'.{type}', ''))
 
     def addService(self, server, type, name):
-        self.names.append(name.replace('.' + type, ''))
+        self.names.append(name.replace(f'.{type}', ''))
 
 class ZCBroadcast:
     def __init__(self, addr, apps):
@@ -323,10 +323,19 @@ class Beacon:
         self.UDPSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.UDPSock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
-        self.beacon_text = '\n'.join(['tivoconnect=1',
-            'method=broadcast', 'identity={%s}' % uuid.uuid4(),
-            'machine=%s' % socket.gethostname(), 'platform=%s' % PLATFORM,
-            'services=TiVoMediaServer:%s/http' % port]) + '\n'
+        self.beacon_text = (
+            '\n'.join(
+                [
+                    'tivoconnect=1',
+                    'method=broadcast',
+                    'identity={%s}' % uuid.uuid4(),
+                    f'machine={socket.gethostname()}',
+                    f'platform={PLATFORM}',
+                    f'services=TiVoMediaServer:{port}/http',
+                ]
+            )
+            + '\n'
+        )
 
         self.ips = ips.split()
 

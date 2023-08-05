@@ -21,7 +21,7 @@ import hme
 class Animate(hme.Application):
     def handle_device_info(self, info):
         ver = info.get('version', '')
-        if ver[:3] in ('9.1', '9.3') and not ver[-3:] in ('648', '652'):
+        if ver[:3] in ('9.1', '9.3') and ver[-3:] not in ('648', '652'):
             self.root.set_text('Sorry, this program is not compatible\n' +
                                'with this TiVo software/hardware version.')
             return

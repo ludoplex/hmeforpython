@@ -541,10 +541,7 @@ class _HMEObject:
 
     """
     def __init__(self, app, id=None):
-        if id is None:
-            self.id = app.next_resnum()
-        else:
-            self.id = id
+        self.id = app.next_resnum() if id is None else id
         self.app = app
 
     def put(self, cmd, format='', *params):
@@ -553,8 +550,7 @@ class _HMEObject:
             according to the format string.
 
         """
-        _put_chunked(self.app.wfile,
-                     _pack('ii' + format, cmd, self.id, *params))
+        _put_chunked(self.app.wfile, _pack(f'ii{format}', cmd, self.id, *params))
 
 class Resource(_HMEObject):
     """ Base class for Resources
@@ -676,8 +672,8 @@ class Font(Resource):
     def __init__(self, app, ttf=None, style=FONT_PLAIN, size=24, flags=0):
         if ttf is None:
             ttf = app.last_ttf
-            if ttf is None:
-                ttf = app.default_ttf
+        if ttf is None:
+            ttf = app.default_ttf
         self.key = (ttf, style, size, flags)
         if self.key in app.fonts:
             Resource.__init__(self, app, app.fonts[self.key].id)
@@ -712,8 +708,8 @@ class Text(Resource):
                     color = Color(app)
         if font is None:
             font = app.last_font
-            if font is None:
-                font = Font(app)
+        if font is None:
+            font = Font(app)
         self.put(_CMD_RSRC_ADD_TEXT, 'iis', font.id, color.id, text)
 
     def __del__(self):
@@ -892,10 +888,7 @@ class View(_HMEObject):
         if height is None:
             height = self.height
         if animation is None:
-            if animtime:
-                animation = Animation(self.app, animtime)
-            else:
-                animation = self.app.immediate
+            animation = Animation(self.app, animtime) if animtime else self.app.immediate
         self.put(_CMD_VIEW_SET_BOUNDS, 'iiiii', xpos, ypos, width, height,
                  animation.id)
         self.xpos = xpos
@@ -913,10 +906,7 @@ class View(_HMEObject):
         if yscale is None:
             yscale = self.yscale
         if animation is None:
-            if animtime:
-                animation = Animation(self.app, animtime)
-            else:
-                animation = self.app.immediate
+            animation = Animation(self.app, animtime) if animtime else self.app.immediate
         self.put(_CMD_VIEW_SET_SCALE, 'ffi', xscale, yscale,
                  animation.id)
         self.xscale = xscale
@@ -932,10 +922,7 @@ class View(_HMEObject):
         if (self.xtranslation != xtranslation or
             self.ytranslation != ytranslation):
             if animation is None:
-                if animtime:
-                    animation = Animation(self.app, animtime)
-                else:
-                    animation = self.app.immediate
+                animation = Animation(self.app, animtime) if animtime else self.app.immediate
             self.put(_CMD_VIEW_SET_TRANSLATION, 'iii',
                      xtranslation, ytranslation, animation.id)
             self.xtranslation = xtranslation
@@ -958,10 +945,7 @@ class View(_HMEObject):
         """
         if self.transparency != transparency:
             if animation is None:
-                if animtime:
-                    animation = Animation(self.app, animtime)
-                else:
-                    animation = self.app.immediate
+                animation = Animation(self.app, animtime) if animtime else self.app.immediate
             self.put(_CMD_VIEW_SET_TRANSPARENCY, 'fi',
                      transparency, animation.id)
             self.transparency = transparency
@@ -973,10 +957,7 @@ class View(_HMEObject):
         """
         if self.visible != visible:
             if animation is None:
-                if animtime:
-                    animation = Animation(self.app, animtime)
-                else:
-                    animation = self.app.immediate
+                animation = Animation(self.app, animtime) if animtime else self.app.immediate
             self.put(_CMD_VIEW_SET_VISIBLE, 'bi',
                      visible, animation.id)
             self.visible = visible
@@ -1020,10 +1001,7 @@ class View(_HMEObject):
     def remove(self, animation=None, animtime=0):
         """ Remove the view, optionally after a period of time. """
         if animation is None:
-            if animtime:
-                animation = Animation(self.app, animtime)
-            else:
-                animation = self.app.immediate
+            animation = Animation(self.app, animtime) if animtime else self.app.immediate
         self.put(_CMD_VIEW_REMOVE, 'i', animation.id)
         if self.parent:
             self.parent.children.remove(self)
@@ -1290,10 +1268,7 @@ class Application(Resource):
 
         """
         if animation is None:
-            if animtime:
-                animation = Animation(self, animtime)
-            else:
-                animation = self.immediate
+            animation = Animation(self, animtime) if animtime else self.immediate
         self.put(_CMD_RSRC_SEND_EVENT, 'iiiiii', animation.id, _EVT_KEY,
                  self.id, KEY_PRESS, keynum, rawcode)
         try:

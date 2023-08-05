@@ -46,7 +46,7 @@ class Picture(hme.Application):
             delay = float(config['delay'])
 
         if not os.path.isdir(rootpath):
-            self.root.set_text('Path not found: ' + rootpath)
+            self.root.set_text(f'Path not found: {rootpath}')
             self.sleep(5)
             self.active = False
             return
@@ -95,13 +95,7 @@ class Picture(hme.Application):
                 self.newpic(-1)
 
     def handle_idle(self, idle):
-        if idle:
-            # If entering idle mode during a slideshow, ignore it;
-            # if on a still frame, exit the app...
-            return self.in_slideshow
-        else:
-            # ...but we can always handle exiting idle mode.
-            return True
+        return self.in_slideshow if idle else True
 
     def handle_error(self, code, text):
         print code, text

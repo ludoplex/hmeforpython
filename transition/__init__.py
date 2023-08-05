@@ -73,9 +73,12 @@ class Transition(hme.Application):
             mem = chr(self.cur_color)
             params = {'entry': self.cur_color,
                       'depth': int(self.params['depth']) + 1}
-            self.transition(hme.TRANSITION_FORWARD, params,
-                            'http://%s/transition/' %
-                            self.context.headers['host'], mem)
+            self.transition(
+                hme.TRANSITION_FORWARD,
+                params,
+                f"http://{self.context.headers['host']}/transition/",
+                mem,
+            )
         elif code == hme.KEY_LEFT:
             params = {'return': self.cur_color,
                       'depth': int(self.params['depth']) - 1}
@@ -85,8 +88,7 @@ class Transition(hme.Application):
         self.error_view.set_value(text)
 
     def update_inits(self):
-        self.depth_view.set_value('Current depth is %s.' %
-                                  self.params['depth'])
+        self.depth_view.set_value(f"Current depth is {self.params['depth']}.")
 
         ec = int(self.params['entry'])
         if ec < 0:

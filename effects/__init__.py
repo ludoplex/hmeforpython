@@ -38,7 +38,7 @@ import hme
 class Effects(hme.Application):
     def handle_device_info(self, info):
         ver = info.get('version', '')
-        if ver[:3] in ('9.1', '9.3') and not ver[-3:] in ('648', '652'):
+        if ver[:3] in ('9.1', '9.3') and ver[-3:] not in ('648', '652'):
             self.root.set_text('Sorry, this program is not compatible\n' +
                                'with this TiVo software/hardware version.')
             self.sleep(5)
@@ -126,10 +126,7 @@ class Effects(hme.Application):
             self.transparency.set_transparency(int(parity), anim)
             self.visible.set_visible(int(not parity), anim)
             self.translate.set_translation(200 * int(parity), 0, anim)
-            if parity:
-                newscale = 1.5
-            else:
-                newscale = 1
+            newscale = 1.5 if parity else 1
             self.scale.set_scale(newscale, newscale, anim)
 
             if parity:

@@ -18,8 +18,7 @@ import hme
 class Clock(hme.Application):
     def startup(self):
         self.root.set_color()
-        self.time_views = [hme.View(self, 0, 100, height=280)
-                           for i in xrange(2)]
+        self.time_views = [hme.View(self, 0, 100, height=280) for _ in xrange(2)]
 
         hme.Font(self, size=96, style=hme.FONT_BOLD)
         hme.Color(self, 0)

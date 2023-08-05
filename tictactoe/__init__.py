@@ -64,10 +64,7 @@ class TicTacToe(hme.Application):
         victory = self.is_victory()
         draw = not victory and self.num_moves == 9
         if victory or draw:
-            if victory:
-                snd = 'tivo'
-            else:
-                snd = 'thumbsdown'
+            snd = 'tivo' if victory else 'thumbsdown'
             self.sound(snd)
 
             self.sleep(2)
@@ -119,7 +116,7 @@ class TicTacToe(hme.Application):
         # yes - we win! highlight the pieces.
         x = ox
         y = oy
-        for i in xrange(3):
+        for _ in xrange(3):
             self.pieces[x][y].set_color(0xffa000)
             x += dx
             y += dy
